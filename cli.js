@@ -238,6 +238,13 @@ const commands = [
         alias: ["zkesv", "generateverifier -vk|verificationkey -v|verifier"],
         action: zkeyExportSolidityVerifier
     },
+    // JAVA-SCORE Support: Export to JAVA verifier
+    {
+        cmd: "zkey export javaverifier [circuit_final.zkey] [verifier.sol]",
+        description: "Creates a verifier in JAVA SCORE",
+        alias: ["zkesv", "generateverifier -vk|verificationkey -v|verifier"],
+        action: zkeyExportJavaVerifier
+    },
     {
         cmd: "zkey export soliditycalldata [public.json] [proof.json]",
         description: "Generates call parameters ready to be called.",
@@ -587,6 +594,43 @@ async function zkeyExportSolidityVerifier(params, options) {
     }
     
     const verifierCode = await zkey.exportSolidityVerifier(zkeyName, templates, logger);
+
+    fs.writeFileSync(verifierName, verifierCode, "utf-8");
+
+    return 0;
+}
+
+// solidity genverifier [circuit_final.zkey] [verifier.sol]
+// JAVA-SCORE Support: Export to JAVA verifier
+async function zkeyExportJavaVerifier(params, options) {
+    let zkeyName;
+    let verifierName;
+
+    if (params.length < 1) {
+        zkeyName = "circuit_final.zkey";
+    } else {
+        zkeyName = params[0];
+    }
+
+    if (params.length < 2) {
+        verifierName = "verifier.java";
+    } else {
+        verifierName = params[1];
+    }
+
+    if (options.verbose) Logger.setLogLevel("DEBUG");
+
+    const templates = {};
+
+    if (await fileExists(path.join(__dirname, "templates"))) {
+        templates.groth16 = await fs.promises.readFile(path.join(__dirname, "templates", "verifier_groth16.java.ejs"), "utf8");
+        templates.plonk = await fs.promises.readFile(path.join(__dirname, "templates", "verifier_plonk.java.ejs"), "utf8");    
+    } else {
+        templates.groth16 = await fs.promises.readFile(path.join(__dirname, "..", "templates", "verifier_groth16.java.ejs"), "utf8");
+        templates.plonk = await fs.promises.readFile(path.join(__dirname, "..", "templates", "verifier_plonk.java.ejs"), "utf8");    
+    }
+    
+    const verifierCode = await zkey.exportJavaVerifier(zkeyName, templates, logger);
 
     fs.writeFileSync(verifierName, verifierCode, "utf-8");
 
