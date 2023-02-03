@@ -134,7 +134,7 @@ function r1csPrint$1(r1cs, syms, logger) {
             const keys = Object.keys(lc);
             keys.forEach( (k) => {
                 let name = syms.varIdx2Name[k];
-                if (name == "one") name = "";
+                if (name == "one") name = "1";
 
                 let vs = r1cs.curve.Fr.toString(lc[k]);
                 if (vs == "1") vs = "";  // Do not show ones
@@ -5370,6 +5370,20 @@ async function exportSolidityVerifier(zKeyName, templates, logger) {
     return ejs__default["default"].render(template ,  verificationKey);
 }
 
+// Not ready yet
+// module.exports.generateVerifier_kimleeoh = generateVerifier_kimleeoh;
+
+
+
+async function exportJavaVerifier(zKeyName, templates, logger) {
+
+    const verificationKey = await zkeyExportVerificationKey(zKeyName);
+
+    let template = templates[verificationKey.protocol];
+
+    return ejs__default["default"].render(template ,  verificationKey);
+}
+
 /*
     Copyright 2018 0KIMS association.
 
@@ -8217,6 +8231,13 @@ const commands = [
         alias: ["zkesv", "generateverifier -vk|verificationkey -v|verifier"],
         action: zkeyExportSolidityVerifier
     },
+    // JAVA-SCORE Support: Export to JAVA verifier
+    {
+        cmd: "zkey export javaverifier [circuit_final.zkey] [verifier.sol]",
+        description: "Creates a verifier in JAVA SCORE",
+        alias: ["zkesv", "generateverifier -vk|verificationkey -v|verifier"],
+        action: zkeyExportJavaVerifier
+    },
     {
         cmd: "zkey export soliditycalldata [public.json] [proof.json]",
         description: "Generates call parameters ready to be called.",
@@ -8572,6 +8593,43 @@ async function zkeyExportSolidityVerifier(params, options) {
     return 0;
 }
 
+// solidity genverifier [circuit_final.zkey] [verifier.sol]
+// JAVA-SCORE Support: Export to JAVA verifier
+async function zkeyExportJavaVerifier(params, options) {
+    let zkeyName;
+    let verifierName;
+
+    if (params.length < 1) {
+        zkeyName = "circuit_final.zkey";
+    } else {
+        zkeyName = params[0];
+    }
+
+    if (params.length < 2) {
+        verifierName = "verifier.java";
+    } else {
+        verifierName = params[1];
+    }
+
+    if (options.verbose) Logger__default["default"].setLogLevel("DEBUG");
+
+    const templates = {};
+
+    if (await fileExists(path__default["default"].join(__dirname$1, "templates"))) {
+        templates.groth16 = await fs__default["default"].promises.readFile(path__default["default"].join(__dirname$1, "templates", "verifier_groth16.java.ejs"), "utf8");
+        templates.plonk = await fs__default["default"].promises.readFile(path__default["default"].join(__dirname$1, "templates", "verifier_plonk.java.ejs"), "utf8");    
+    } else {
+        templates.groth16 = await fs__default["default"].promises.readFile(path__default["default"].join(__dirname$1, "..", "templates", "verifier_groth16.java.ejs"), "utf8");
+        templates.plonk = await fs__default["default"].promises.readFile(path__default["default"].join(__dirname$1, "..", "templates", "verifier_plonk.java.ejs"), "utf8");    
+    }
+    
+    const verifierCode = await exportJavaVerifier(zkeyName, templates);
+
+    fs__default["default"].writeFileSync(verifierName, verifierCode, "utf-8");
+
+    return 0;
+}
+
 
 // solidity gencall <public.json> <proof.json>
 async function zkeyExportSolidityCalldata(params, options) {
@@ -8617,7 +8675,7 @@ async function powersOfTauNew(params, options) {
     curveName = params[0];
 
     power = parseInt(params[1]);
-    if ((power<1) || (power>28)) {
+    if ((power<1) || (power>28) || isNaN(power)) {
         throw new Error("Power must be between 1 and 28");
     }
 
