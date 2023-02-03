@@ -1,5 +1,12 @@
 
 ![tests](https://github.com/iden3/snarkjs/workflows/tests/badge.svg)![Check%20snarkjs%20tutorial](https://github.com/iden3/snarkjs/workflows/Check%20snarkjs%20tutorial/badge.svg)
+## Running the modified version
+To run the modified version use `node build/cli.cjs` instead of `snarkjs`. 
+
+This also supports exporting the verifier to the JAVA Contract. Here's an example.
+```sh
+node build/cli.cjs zkey export javaverifier circuit_final.zkey verifier_groth16.java
+```
 
 # snarkjs
 
