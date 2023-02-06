@@ -106,7 +106,7 @@ public class Pairing {
     }
 
     public static G1Point addition(G1Point p1, G1Point p2) {
-        byte[] res = Context.bn256('add',
+        byte[] res = Context.bn256("add",
                 concatBytes(
                         G1PointToBytes(p1),
                         G1PointToBytes(p2)
@@ -116,7 +116,7 @@ public class Pairing {
     }
 
     public static G1Point scalar_mul(G1Point p, BigInteger s) {
-        byte[] res = Context.bn256('mul',
+        byte[] res = Context.bn256("mul",
                 concatBytes(
                         G1PointToBytes(p),
                         s.toByteArray()
@@ -151,7 +151,7 @@ public class Pairing {
             );
         }
 
-        byte[] res = Context.bn256('pairing', arg);
+        byte[] res = Context.bn256("pairing", arg);
         if (res[0] == 1) {
             return true;
         } else {
