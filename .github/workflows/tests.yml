@@ -34,7 +34,7 @@ jobs:
 
   publish:
     name: Publish
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/master' }}
     needs: [test]
 
