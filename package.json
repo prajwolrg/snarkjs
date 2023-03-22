@@ -1,7 +1,7 @@
 {
   "name": "snarkjs",
   "type": "module",
-  "version": "0.5.0",
+  "version": "0.0.0-development",
   "description": "zkSNARKs implementation in JavaScript",
   "main": "./build/main.cjs",
   "module": "./main.js",
@@ -14,7 +14,8 @@
     "build": "rollup -c config/rollup.cjs.config.js",
     "buildcli": "rollup -c config/rollup.cli.config.js",
     "buildiife": "BROWSER=true rollup -c config/rollup.iife.config.js",
-    "buildiifemin": "BROWSER=true rollup -c config/rollup.iife_min.config.js"
+    "buildiifemin": "BROWSER=true rollup -c config/rollup.iife_min.config.js",
+    "semantic-release": "semantic-release"
   },
   "bin": {
     "snarkjs": "build/cli.cjs"
@@ -35,7 +36,7 @@
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/iden3/snarkjs.git"
+    "url": "https://github.com/prajwolrg/snarkjs.git"
   },
   "dependencies": {
     "@iden3/binfileutils": "0.0.11",
@@ -60,6 +61,8 @@
     "mocha": "^10.0.0",
     "rollup": "^2.36.2",
     "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-visualizer": "^5.6.0"
+    "rollup-plugin-visualizer": "^5.6.0",
+    "semantic-release": "^20.1.3"
   }
 }
+
