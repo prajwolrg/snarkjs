@@ -65,3 +65,17 @@ jobs:
 
       - name: Run tests
         run: npm run testv12
+        
+  publish:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/master' }}
+    needs: [test, testv12]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2 
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
+    - run: run run semantic-release
+      
