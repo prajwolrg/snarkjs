@@ -1,5 +1,5 @@
 {
-  "name": "snarkjs",
+  "name": "snarkjs-pg",
   "type": "module",
   "version": "0.0.0-development",
   "description": "zkSNARKs implementation in JavaScript",
