@@ -19,7 +19,7 @@
     "semantic-release": "semantic-release"
   },
   "bin": {
-    "snarkjs": "build/cli.cjs"
+    "snarkjs-pg": "build/cli.cjs"
   },
   "directories": {
     "templates": "templates"
