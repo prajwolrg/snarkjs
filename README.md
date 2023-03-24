@@ -1,5 +1,5 @@
 
-![tests](https://github.com/iden3/snarkjs-pg/workflows/tests/badge.svg)![Check%20snarkjs-pg%20tutorial](https://github.com/iden3/snarkjs-pg/workflows/Check%20snarkjs-pg%20tutorial/badge.svg)
+![tests](https://github.com/prajworlg/snarkjs/workflows/tests/badge.svg)![Check%20snarkjs%20tutorial](https://github.com/prajwolrg/snarkjs/workflows/Check%20snarkjs%20tutorial/badge.svg)
 
 # snarkjs-pg
 
