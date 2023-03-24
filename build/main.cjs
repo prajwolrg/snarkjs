@@ -1119,10 +1119,10 @@ async function joinABC(curve, zkey, a, b, c, logger) {
     You should have received a copy of the GNU General Public License
     along with snarkJS. If not, see <https://www.gnu.org/licenses/>.
 */
-const { unstringifyBigInts: unstringifyBigInts$7} = ffjavascript.utils;
+const { unstringifyBigInts: unstringifyBigInts$8} = ffjavascript.utils;
 
 async function wtnsCalculate(_input, wasmFileName, wtnsFileName, options) {
-    const input = unstringifyBigInts$7(_input);
+    const input = unstringifyBigInts$8(_input);
 
     const fdWasm = await fastFile__namespace.readExisting(wasmFileName);
     const wasm = await fdWasm.read(fdWasm.totalSize);
@@ -1164,10 +1164,10 @@ async function wtnsCalculate(_input, wasmFileName, wtnsFileName, options) {
     You should have received a copy of the GNU General Public License
     along with snarkJS. If not, see <https://www.gnu.org/licenses/>.
 */
-const {unstringifyBigInts: unstringifyBigInts$6} = ffjavascript.utils;
+const {unstringifyBigInts: unstringifyBigInts$7} = ffjavascript.utils;
 
 async function groth16FullProve(_input, wasmFile, zkeyFileName, logger) {
-    const input = unstringifyBigInts$6(_input);
+    const input = unstringifyBigInts$7(_input);
 
     const wtns= {
         type: "mem"
@@ -1194,7 +1194,7 @@ async function groth16FullProve(_input, wasmFile, zkeyFileName, logger) {
     You should have received a copy of the GNU General Public License along with
     snarkjs. If not, see <https://www.gnu.org/licenses/>.
 */
-const {unstringifyBigInts: unstringifyBigInts$5} = ffjavascript.utils;
+const {unstringifyBigInts: unstringifyBigInts$6} = ffjavascript.utils;
 
 async function groth16Verify(_vk_verifier, _publicSignals, _proof, logger) {
 /*
@@ -1204,9 +1204,9 @@ async function groth16Verify(_vk_verifier, _publicSignals, _proof, logger) {
     }
 */
 
-    const vk_verifier = unstringifyBigInts$5(_vk_verifier);
-    const proof = unstringifyBigInts$5(_proof);
-    const publicSignals = unstringifyBigInts$5(_publicSignals);
+    const vk_verifier = unstringifyBigInts$6(_vk_verifier);
+    const proof = unstringifyBigInts$6(_proof);
+    const publicSignals = unstringifyBigInts$6(_publicSignals);
 
     const curve = await getCurveFromName(vk_verifier.curve);
 
@@ -1267,6 +1267,52 @@ async function groth16Verify(_vk_verifier, _publicSignals, _proof, logger) {
     You should have received a copy of the GNU General Public License
     along with snarkJS. If not, see <https://www.gnu.org/licenses/>.
 */
+const { unstringifyBigInts: unstringifyBigInts$5} = ffjavascript.utils;
+
+function p256$2(n) {
+    let nstr = n.toString(16);
+    while (nstr.length < 64) nstr = "0"+nstr;
+    nstr = `"0x${nstr}"`;
+    return nstr;
+}
+
+async function groth16ExportSolidityCallData(_proof, _pub) {
+    const proof = unstringifyBigInts$5(_proof);
+    const pub = unstringifyBigInts$5(_pub);
+
+    let inputs = "";
+    for (let i=0; i<pub.length; i++) {
+        if (inputs != "") inputs = inputs + ",";
+        inputs = inputs + p256$2(pub[i]);
+    }
+
+    let S;
+    S=`[${p256$2(proof.pi_a[0])}, ${p256$2(proof.pi_a[1])}],` +
+        `[[${p256$2(proof.pi_b[0][1])}, ${p256$2(proof.pi_b[0][0])}],[${p256$2(proof.pi_b[1][1])}, ${p256$2(proof.pi_b[1][0])}]],` +
+        `[${p256$2(proof.pi_c[0])}, ${p256$2(proof.pi_c[1])}],` +
+        `[${inputs}]`;
+
+    return S;
+}
+
+/*
+    Copyright 2018 0KIMS association.
+
+    This file is part of snarkJS.
+
+    snarkJS is a free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    snarkJS is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+    or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public
+    License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with snarkJS. If not, see <https://www.gnu.org/licenses/>.
+*/
 const { unstringifyBigInts: unstringifyBigInts$4} = ffjavascript.utils;
 
 function p256$1(n) {
@@ -1276,7 +1322,7 @@ function p256$1(n) {
     return nstr;
 }
 
-async function groth16ExportSolidityCallData(_proof, _pub) {
+async function groth16ExportJavaCallData(_proof, _pub) {
     const proof = unstringifyBigInts$4(_proof);
     const pub = unstringifyBigInts$4(_pub);
 
@@ -1319,7 +1365,8 @@ var groth16 = /*#__PURE__*/Object.freeze({
     fullProve: groth16FullProve,
     prove: groth16Prove,
     verify: groth16Verify,
-    exportSolidityCallData: groth16ExportSolidityCallData
+    exportSolidityCallData: groth16ExportSolidityCallData,
+    exportJavaCallData: groth16ExportJavaCallData
 });
 
 /*
@@ -3659,7 +3706,7 @@ function r1csPrint(r1cs, syms, logger) {
             const keys = Object.keys(lc);
             keys.forEach( (k) => {
                 let name = syms.varIdx2Name[k];
-                if (name == "one") name = "";
+                if (name == "one") name = "1";
 
                 let vs = r1cs.curve.Fr.toString(lc[k]);
                 if (vs == "1") vs = "";  // Do not show ones
@@ -5943,6 +5990,20 @@ async function exportSolidityVerifier(zKeyName, templates, logger) {
     return ejs__default["default"].render(template ,  verificationKey);
 }
 
+// Not ready yet
+// module.exports.generateVerifier_kimleeoh = generateVerifier_kimleeoh;
+
+
+
+async function exportJavaVerifier(zKeyName, templates, logger) {
+
+    const verificationKey = await zkeyExportVerificationKey(zKeyName);
+
+    let template = templates[verificationKey.protocol];
+
+    return ejs__default["default"].render(template ,  verificationKey);
+}
+
 /*
     Copyright 2018 0KIMS association.
 
@@ -5974,7 +6035,8 @@ var zkey = /*#__PURE__*/Object.freeze({
     exportJson: zkeyExportJson,
     bellmanContribute: bellmanContribute,
     exportVerificationKey: zkeyExportVerificationKey,
-    exportSolidityVerifier: exportSolidityVerifier
+    exportSolidityVerifier: exportSolidityVerifier,
+    exportJavaVerifier: exportJavaVerifier
 });
 
 /*

@@ -8239,6 +8239,12 @@ const commands = [
         action: zkeyExportJavaVerifier
     },
     {
+        cmd: "zkey export javacalldata [public.json] [proof.json]",
+        description: "Generates call parameters ready to be called.",
+        alias: ["zkesc", "generatecall -pub|public -p|proof"],
+        action: zkeyExportJavaCalldata
+    },
+    {
         cmd: "zkey export soliditycalldata [public.json] [proof.json]",
         description: "Generates call parameters ready to be called.",
         alias: ["zkesc", "generatecall -pub|public -p|proof"],
@@ -8664,6 +8670,11 @@ async function zkeyExportSolidityCalldata(params, options) {
     console.log(res);
 
     return 0;
+}
+
+// solidity gencall <public.json> <proof.json>
+async function zkeyExportJavaCalldata(params, options) {
+    return zkeyExportSolidityCalldata(params, options);
 }
 
 // powersoftau new <curve> <power> [powersoftau_0000.ptau]",
