@@ -171,8 +171,6 @@ public class Verifier {
             Context.require(p1.length == p2.length, "Pairing: G1 and G2 points must have same length");
             Context.require(p1.length > 0, "Paring: Must have some points");
 
-            Context.println("Trying Pairing");
-
             byte[] arg = ByteUtil.concat(p1[0].encode(), p2[0].encode());
             for (int i=1; i<p1.length; i++) {
                 byte[] tmp = ByteUtil.concat(p1[i].encode(), p2[i].encode());

@@ -103,23 +103,10 @@ jobs:
       run: snarkjs-pg groth16 prove circuit_final.zkey witness.wtns proof.json public.json
     - name: 25. Verify the proof
       run: snarkjs-pg groth16 verify verification_key.json public.json proof.json
-    - name: 26. Turn the verifier into a smart contract
-      run: snarkjs-pg zkey export solidityverifier circuit_final.zkey verifier.sol
+    - name: 26. Turn the verifier into a JAVA smart contract
+      run: snarkjs-pg zkey export javaverifier circuit_final.zkey verifier.sol
     - name: 27. Simulate a verification call
-      run: snarkjs-pg zkey export soliditycalldata public.json proof.json
-    - name: 28. Plonk setup
-      run: snarkjs-pg plonk setup circuit.r1cs pot12_final.ptau circuit_final.zkey
-    - name: 29. Export the verification key
-      run: snarkjs-pg zkey export verificationkey circuit_final.zkey verification_key.json
-    - name: 30. Create a PLONK proof
-      run: snarkjs-pg plonk prove circuit_final.zkey witness.wtns proof.json public.json
-    - name: 31. Verify the PLONK proof
-      run: snarkjs-pg plonk verify verification_key.json public.json proof.json
-    - name: 32. Turn the PLONK verifier into a smart contract
-      run: snarkjs-pg zkey export solidityverifier circuit_final.zkey verifier.sol
-    - name: 33. Simulate a PLONK verification call
-      run: snarkjs-pg zkey export soliditycalldata public.json proof.json
-
+      run: snarkjs-pg zkey export javacalldata public.json proof.json
 
 
 
